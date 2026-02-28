@@ -1,10 +1,15 @@
-import sql from "@/lib/db";
+import { neon } from '@neondatabase/serverless';
 import ProductCard from "@/components/ProductCard";
 import Link from "next/link";
 
+const sql = neon(process.env.DATABASE_URL); // 👈 เพิ่มบรรทัดนี้
+
 export default async function HomePage() {
-  // ดึงสินค้าแนะนำ 4 ชิ้น
-  const featuredProducts = await sql`SELECT * FROM "Product" WHERE is_featured = TRUE LIMIT 4`;
+  const featuredProducts = await sql`
+    SELECT * FROM "Product" 
+    WHERE is_featured = TRUE 
+    LIMIT 4
+  `;
 
   return (
     <main className="min-h-screen bg-white">
