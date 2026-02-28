@@ -15,13 +15,13 @@ function Navigation() {
   const pathname = usePathname();
   const searchRef = useRef(null);
   const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const isCheckoutPage = pathname === "/checkout";
+  const isCheckoutPage = pathname?.startsWith("/checkout"); 
   const [search, setSearch] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     const [showHeader, setShowHeader] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollY = useRef(0);
 
   const router = useRouter();
 const [keyword, setKeyword] = useState("");
@@ -33,21 +33,22 @@ const handleSearch = (e) => {
   router.push(`/products?search=${keyword}`);
 };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > lastScrollY) {
-        // เลื่อนลง
-        setShowHeader(false);
-      } else {
-        // เลื่อนขึ้น
-        setShowHeader(true);
-      }
-      setLastScrollY(window.scrollY);
-    };
+useEffect(() => {
+  const handleScroll = () => {
+    const currentScrollY = window.scrollY;
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+    if (currentScrollY < lastScrollY.current) {
+      setShowHeader(true);
+    } else if (currentScrollY > lastScrollY.current && currentScrollY > 80) {
+      setShowHeader(false);
+    }
+
+    lastScrollY.current = currentScrollY;
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
 
   useEffect(() => {
   const fetchSuggestions = async () => {
@@ -110,7 +111,7 @@ const handleSearch = (e) => {
     <>
       {/* Navbar หน้าหลักของหนู */}
       <header
-  className={`fixed top-0 left-0 w-full transition-transform duration-300 z-50 ${
+  className={`fixed top-0 left-0 w-full transition-transform duration-300 z-[100000] ${
     showHeader ? "translate-y-0" : "-translate-y-full"
   } bg-white shadow-sm`}
 >
