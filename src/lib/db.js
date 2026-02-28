@@ -1,8 +1,5 @@
-import postgres from 'postgres';
+import { neon } from "@neondatabase/serverless";
 
-// ดึง URL จากไฟล์ .env ที่หนูตั้งค่าไว้
-const sql = postgres(process.env.DATABASE_URL, { 
-  ssl: 'require' 
-});
+const sql = neon(process.env.DATABASE_URL);
 
 export default sql;
