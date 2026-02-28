@@ -1,10 +1,10 @@
 "use client";
-export const dynamic = "force-dynamic";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function ThankYouPage() {
+function ThankYouContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
 
@@ -13,6 +13,7 @@ export default function ThankYouPage() {
       <h1 className="text-3xl font-light tracking-[0.2em] uppercase mb-4">
         Thank You
       </h1>
+
       <p className="text-gray-600 mb-8">
         การสั่งซื้อของคุณเสร็จสมบูรณ์แล้วค่ะ
       </p>
@@ -30,5 +31,13 @@ export default function ThankYouPage() {
         Back to Shop
       </Link>
     </div>
+  );
+}
+
+export default function ThankYouPage() {
+  return (
+    <Suspense fallback={<div className="text-center mt-20">Loading...</div>}>
+      <ThankYouContent />
+    </Suspense>
   );
 }
